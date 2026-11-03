@@ -1,0 +1,36 @@
+{
+  "name": "aquila-next-ai",
+  "version": "0.1.0",
+  "description": "AI-assisted development method for Next.js: plan → tests → implement → review, quality gates, docs and adapters for Claude Code, GitHub Copilot and Codex.",
+  "keywords": ["nextjs", "next", "react", "frontend", "ai", "claude-code", "copilot", "codex", "agents", "tdd", "cli"],
+  "license": "MIT",
+  "author": "Aquila Zimbrao",
+  "repository": { "type": "git", "url": "git+https://github.com/arielzimbrao-dev/aquila-next-ai.git" },
+  "homepage": "https://github.com/arielzimbrao-dev/aquila-next-ai#readme",
+  "bugs": "https://github.com/arielzimbrao-dev/aquila-next-ai/issues",
+  "type": "module",
+  "bin": { "aquila-next-ai": "bin/aquila.mjs" },
+  "files": [
+    "bin/",
+    "core/",
+    "agents/",
+    "adapters/",
+    "skills/",
+    "hooks/",
+    "githooks/",
+    "lint/",
+    "schema/",
+    "stacks/",
+    "templates/",
+    ".claude-plugin/",
+    "AGENTS.md",
+    "CHANGELOG.md",
+    "assets/"
+  ],
+  "engines": { "node": ">=22" },
+  "peerDependencies": { "next": ">=12" },
+  "peerDependenciesMeta": { "next": { "optional": true } },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  }
+}

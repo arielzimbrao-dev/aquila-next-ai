@@ -1,0 +1,77 @@
+{
+  "name": "node-next",
+  "detect": {
+    "file": "package.json",
+    "contains": "\"next\":"
+  },
+  "srcDirs": ["src", "app", "pages", "components", "lib"],
+  "testDirs": ["test", "tests", "e2e", "__tests__"],
+  "lintEngine": "eslint",
+  "gates": {
+    "typecheck": {
+      "npmScripts": ["typecheck", "type-check"]
+    },
+    "test": {
+      "npmScripts": ["test"]
+    },
+    "lint": {
+      "npmScripts": ["lint:ci", "lint"]
+    },
+    "format": {
+      "npmScripts": ["format:check", "prettier:check"]
+    },
+    "coverage": {
+      "npmScripts": ["test:cov", "coverage"]
+    },
+    "build": {
+      "npmScripts": ["build"]
+    },
+    "e2e": {
+      "npmScripts": ["test:e2e", "e2e"],
+      "when": [
+        "src/**",
+        "app/**",
+        "pages/**",
+        "components/**",
+        "lib/**",
+        "public/**",
+        "e2e/**",
+        "tests/**",
+        "package.json",
+        "package-lock.json",
+        "pnpm-lock.yaml",
+        "yarn.lock",
+        "next.config.*",
+        "middleware.*",
+        "proxy.*",
+        "playwright.config.*",
+        "tsconfig*.json"
+      ]
+    }
+  },
+  "hooks": {
+    "pre-commit": ["format", "lint"],
+    "pre-push": ["typecheck", "test"],
+    "ci": ["typecheck", "lint", "format", "test", "coverage", "build", "e2e"]
+  },
+  "coverage": {
+    "statements": 90,
+    "functions": 90,
+    "lines": 90,
+    "branches": 85
+  },
+  "ci": {
+    "node-version": "22"
+  },
+  "coverageEnforcedIf": [
+    ["jest.config.js", "coverageThreshold"],
+    ["jest.config.ts", "coverageThreshold"],
+    ["jest.config.cjs", "coverageThreshold"],
+    ["jest.config.mjs", "coverageThreshold"],
+    ["package.json", "coverageThreshold"],
+    ["vitest.config.ts", "thresholds"],
+    ["vitest.config.mts", "thresholds"],
+    ["vitest.config.js", "thresholds"],
+    ["vite.config.ts", "thresholds"]
+  ]
+}

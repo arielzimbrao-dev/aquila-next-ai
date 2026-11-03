@@ -9,6 +9,7 @@ source of truth and use this map before changing code.
 |---|---|---|
 | Values, types or structure of `docs/ai/aquila.json` | `schema/aquila.schema.json` and `bin/config-validation.mjs` | `test/check-gate.test.mjs` |
 | Lint catalog and levels | `lint/rules.json`, `bin/lint.mjs`, `core/quality.md` | `test/lint.test.mjs` |
+| Subfolder projects, shared hooks dispatcher, root CI workflow (same contract in aquila-ai and aquila-react-ai) | `bin/monorepo.mjs`, `installHooks`/`placementIssues` in `bin/aquila.mjs` | `test/monorepo.test.mjs` |
 | Stack detection and initial gates | `stacks/node-next.json` and `bin/stack.mjs` | `test/stacks.test.mjs` |
 | Path globs (stack, docs and gates) | `bin/glob.mjs` | `test/stacks.test.mjs`, `test/check-gate.test.mjs` |
 | Artifacts, routers and settings | `templates/`, `adapters/`, `bin/aquila.mjs` (`plan`, `sync`) | `test/init-sync.test.mjs` |

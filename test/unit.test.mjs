@@ -39,12 +39,7 @@ test('git hooks delegate to the installed package and are versioned as executabl
   for (const phase of ['pre-commit', 'pre-push']) {
     const text = readFileSync(join(PKG, 'githooks', phase), 'utf8');
     assert.ok(!text.includes('\r\n'), `${phase}: sh breaks with CRLF`);
-    assert.match(
-      text,
-      new RegExp(
-        `exec node "\\$\\(git rev-parse --show-toplevel\\)/node_modules/aquila-next-ai/bin/aquila\\.mjs" gate ${phase}`,
-      ),
-    );
+    assert.match(text, new RegExp(`node_modules/aquila-next-ai/bin/aquila\\.mjs gate ${phase}\\n$`));
   }
   // Linux/macOS ignore hooks without +x; only verifiable when the package is a git checkout.
   let modes;

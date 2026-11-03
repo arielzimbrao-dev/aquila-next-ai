@@ -1,6 +1,6 @@
 {
   "name": "aquila-next-ai",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "AI-assisted development method for Next.js: plan → tests → implement → review, quality gates, docs and adapters for Claude Code, GitHub Copilot and Codex.",
   "keywords": ["nextjs", "next", "react", "frontend", "ai", "claude-code", "copilot", "codex", "agents", "tdd", "cli"],
   "license": "MIT",

@@ -22,7 +22,7 @@
 
 ---
 
-Version **0.1.0**
+Version **0.2.0**
 
 ## Why aquila-next-ai?
 
@@ -52,6 +52,17 @@ npx aquila-next-ai init
 
 Then ask your agent for **`/aquila-init`**. It reads your codebase, confirms six choices with you and writes
 the documentation the agents will rely on. That's it: `/aquila-plan` is ready.
+
+## Sibling packages
+
+The same method, one package per stack — they share the git hooks dispatcher, so they live side by side in
+one repository (e.g. `backend/` + `frontend/`):
+
+| Package | Stack |
+|---|---|
+| [`aquila-ai`](https://www.npmjs.com/package/aquila-ai) | NestJS (backend) |
+| [`aquila-react-ai`](https://www.npmjs.com/package/aquila-react-ai) | React |
+| [`aquila-next-ai`](https://www.npmjs.com/package/aquila-next-ai) | Next.js (this package) |
 
 ## What lands in your project
 
@@ -231,6 +242,39 @@ claude plugin install aquila@aquila-next-ai --scope local
 | `.aquila/`, docs, config, CI | versioned | versioned |
 | Routers (`AGENTS.md`, `CLAUDE.md`, Copilot) and settings | generated per machine | versioned — cloud agents and AI PR review get them |
 | New teammate | `npm install && npx aquila-next-ai init` | same (hooks are per clone) |
+
+## Monorepo / project in a subfolder
+
+Run `init` **inside the project folder** (`repo/frontend`), where its `package.json` and
+`node_modules` are. aquila-next-ai detects that the git root is above it and adapts:
+
+| | Project at the repo root | Project in a subfolder / several aquila projects |
+|---|---|---|
+| Git hooks | `core.hooksPath = .aquila/githooks` | one dispatcher at the root: `core.hooksPath = .aquila-hooks` |
+| Which gates run | this project's | each registered project's, **only if its folder changed** in the commit/push |
+| CI workflow | `.github/workflows/aquila-gates.yml` | `<root>/.github/workflows/aquila-gates-<folder>.yml` with `paths: ['<folder>/**']` and `working-directory: <folder>` |
+| `.git/info/exclude` (mode `local`) | `/AGENTS.md`… | `/<folder>/AGENTS.md`… |
+
+The dispatcher is shared by the [sibling packages](#sibling-packages): `aquila-ai` in `backend/` and
+`aquila-next-ai` in `frontend/` register in the same `.aquila-hooks/projects` file and never compete for
+`core.hooksPath`. A project at the root that already had `.aquila/githooks` joins the dispatcher when a
+second project runs `init`. The dispatcher is per clone (excluded from git): every dev runs `init` in each
+project, as usual.
+
+```text
+repo/
+├── .aquila-hooks/            ← pre-commit · pre-push (dispatcher, sh) · projects
+│   └── projects              ← "backend<TAB>aquila-ai" · "frontend<TAB>aquila-next-ai"
+├── .github/workflows/
+│   ├── aquila-gates-backend.yml
+│   └── aquila-gates-frontend.yml
+├── backend/   (NestJS · aquila-ai)
+└── frontend/  (Next.js · aquila-next-ai)
+```
+
+`npx aquila-next-ai doctor` shows the subfolder, the dispatcher and the projects sharing it;
+`npx aquila-next-ai check` fails when the hooks or the workflow sit where git or GitHub never run them
+(e.g. a 0.1.0 install in a subfolder — run `init` again to fix it).
 
 ## Updating
 

@@ -533,7 +533,7 @@ test('.aquila/: sync copies the method, check flags edits and strays, sync resto
     ])
       assert.ok(existsSync(join(root, '.aquila', f)), f);
     assert.equal(readIn(root, '.aquila/core/workflow.md'), readFileSync(join(PKG, 'core/workflow.md'), 'utf8'));
-    assert.doesNotMatch(readIn(root, '.git/info/exclude'), /\.aquila/, '.aquila is versioned');
+    assert.doesNotMatch(readIn(root, '.git/info/exclude'), /^\/\.aquila(\/|$)/m, '.aquila is versioned');
     assert.equal(aquila(root, 'check').code, 0);
 
     writeFileSync(join(root, '.aquila/core/workflow.md'), 'edited by hand\n');

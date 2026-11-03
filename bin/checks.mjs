@@ -120,8 +120,10 @@ export function hookIssues(root, cfg, hooksPath) {
     // Only a direct delegation proves the exit code propagates, without interpreting/running shell.
     const path = String.raw`(?:\.\/)?node_modules/aquila-next-ai/bin/aquila\.mjs`;
     const script = String.raw`(?:${path}|"${path}"|'${path}'|"\$\(git rev-parse --show-toplevel\)/node_modules/aquila-next-ai/bin/aquila\.mjs")`;
+    // Optional `cd` to the project two folders above the hook (.aquila/githooks/), as the shipped hooks do.
+    const cd = String.raw`(?:cd "\$\(dirname "\$0"\)/\.\./\.\." && )?`;
     const call = new RegExp(
-      `^(?:exec[ \\t]+)?(?:node[ \\t]+${script}|npx(?:[ \\t]+--no(?:-install)?)?[ \\t]+aquila-next-ai)[ \\t]+gate[ \\t]+${phase}$`,
+      `^${cd}(?:exec[ \\t]+)?(?:node[ \\t]+${script}|npx(?:[ \\t]+--no(?:-install)?)?[ \\t]+aquila-next-ai)[ \\t]+gate[ \\t]+${phase}$`,
     );
     if (!shell || !call.test(text))
       issues.push(

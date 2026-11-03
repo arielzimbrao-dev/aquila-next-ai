@@ -1,3 +1,4 @@
 #!/bin/sh
 # aquila-next-ai: runs the "pre-commit" gates from docs/ai/aquila.json (failures and totals only).
-exec node "$(git rev-parse --show-toplevel)/node_modules/aquila-next-ai/bin/aquila.mjs" gate pre-commit
+# The project is two folders up (.aquila/githooks/), also when it lives in a subfolder of the repository.
+cd "$(dirname "$0")/../.." && exec node node_modules/aquila-next-ai/bin/aquila.mjs gate pre-commit

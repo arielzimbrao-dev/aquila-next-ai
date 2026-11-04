@@ -22,7 +22,22 @@
 
 ---
 
-Version **0.2.0**
+Version **0.3.0**
+
+<!-- aquila-family:start -->
+## The aquila family
+
+The same method, one package per stack — each one speaks only its own technology (conventions, lint
+plugins, presets). They share the mechanics: the git hook dispatcher (`.aquila-hooks/`, byte-identical in
+the three), the CI workflow and the gates, so a NestJS backend and a React or Next.js frontend in the same
+repository work side by side. Upgrade them together.
+
+| Package | Stack |
+|---|---|
+| [**aquila-ai**](https://www.npmjs.com/package/aquila-ai) | NestJS |
+| [**aquila-react-ai**](https://www.npmjs.com/package/aquila-react-ai) | React |
+| [**aquila-next-ai**](https://www.npmjs.com/package/aquila-next-ai) | Next.js (this package) |
+<!-- aquila-family:end -->
 
 ## Why aquila-next-ai?
 
@@ -217,14 +232,15 @@ Claude Code and Copilot: `/aquila-…` · Codex: "aquila-plan …".
 |---|---|
 | `npx aquila-next-ai init [flags]` | Install: config, templates, `.aquila/`, adapters, CI workflow, hooks |
 | `npx aquila-next-ai sync` | Regenerate `.aquila/`, routers, settings and CI from `aquila.json` |
-| `npx aquila-next-ai check [--ready]` | Schema, links, budgets, drift · strict local readiness |
+| `npx aquila-next-ai check [--ready] [--verbose]` | Schema, links, budgets, drift, hooks/CI location · strict local readiness |
 | `npx aquila-next-ai gate <pre-commit\|pre-push\|ci>` | Run a phase's gates; prints only failures |
 | `npx aquila-next-ai doctor` | Installation diagnostics |
-| `npx aquila-next-ai lint [rules\|matrix]` | ESLint at the configured level · rule status |
+| `npx aquila-next-ai lint [rules|matrix] [--fix] [--baseline]` | ESLint at the configured level · rule status · fixes · legacy baseline |\|matrix]` | ESLint at the configured level · rule status |
 | `npx aquila-next-ai tokens [paths…]` | Estimate tokens to read a scope |
 
 `init` flags: `--lang=en|pt-BR|pt-PT` · `--tools=copilot,claude,codex` · `--token-limit=<n>|none` ·
-`--mode=local|team` · `--lint=off|standard|high` · `--pr-max-files=<n>`.
+`--mode=local|team` · `--lint=off|standard|high` · `--pr-max-files=<n>` · `--code-lang=…` (default: detected) ·
+`--hooks=dispatcher` · `--install` (lint plugins). Every command takes `--help`.
 
 ### Claude Code plugin
 
@@ -243,38 +259,81 @@ claude plugin install aquila@aquila-next-ai --scope local
 | Routers (`AGENTS.md`, `CLAUDE.md`, Copilot) and settings | generated per machine | versioned — cloud agents and AI PR review get them |
 | New teammate | `npm install && npx aquila-next-ai init` | same (hooks are per clone) |
 
+
+<!-- aquila-monorepo:start -->
 ## Monorepo / project in a subfolder
 
-Run `init` **inside the project folder** (`repo/frontend`), where its `package.json` and
-`node_modules` are. aquila-next-ai detects that the git root is above it and adapts:
-
-| | Project at the repo root | Project in a subfolder / several aquila projects |
-|---|---|---|
-| Git hooks | `core.hooksPath = .aquila/githooks` | one dispatcher at the root: `core.hooksPath = .aquila-hooks` |
-| Which gates run | this project's | each registered project's, **only if its folder changed** in the commit/push |
-| CI workflow | `.github/workflows/aquila-gates.yml` | `<root>/.github/workflows/aquila-gates-<folder>.yml` with `paths: ['<folder>/**']` and `working-directory: <folder>` |
-| `.git/info/exclude` (mode `local`) | `/AGENTS.md`… | `/<folder>/AGENTS.md`… |
-
-The dispatcher is shared by the [sibling packages](#sibling-packages): `aquila-ai` in `backend/` and
-`aquila-next-ai` in `frontend/` register in the same `.aquila-hooks/projects` file and never compete for
-`core.hooksPath`. A project at the root that already had `.aquila/githooks` joins the dispatcher when a
-second project runs `init`. The dispatcher is per clone (excluded from git): every dev runs `init` in each
-project, as usual.
+aquila-next-ai works when the Next.js project is not the repository root (`repo/backend`, `repo/apps/web`…) and next
+to the other aquila packages (e.g. `repo/backend` with aquila-ai + `repo/frontend` with aquila-react-ai). Run
+`npm i -D aquila-next-ai` and `npx aquila-next-ai init` **inside the project folder**; everything git, GitHub and Copilot read
+is written at the repository root:
 
 ```text
 repo/
-├── .aquila-hooks/            ← pre-commit · pre-push (dispatcher, sh) · projects
-│   └── projects              ← "backend<TAB>aquila-ai" · "frontend<TAB>aquila-next-ai"
-├── .github/workflows/
-│   ├── aquila-gates-backend.yml
-│   └── aquila-gates-frontend.yml
-├── backend/   (NestJS · aquila-ai)
-└── frontend/  (Next.js · aquila-next-ai)
+├── .aquila-hooks/            ← one hook dispatcher for the whole repo (core.hooksPath = .aquila-hooks)
+│   ├── pre-commit  pre-push  ← same bytes in every aquila package, versioned 100755
+│   └── projects              ← "aquila-ai backend" / "aquila-react-ai frontend" — one line per project
+├── .github/
+│   ├── workflows/aquila-gates-backend.yml       ← per project: working-directory, paths: backend/**
+│   └── instructions/aquila-backend.instructions.md ← Copilot rules scoped to backend/** (applyTo)
+├── backend/                  ← NestJS + aquila-ai (.aquila/, docs/, AGENTS.md…)
+└── frontend/                 ← React + aquila-react-ai
 ```
 
-`npx aquila-next-ai doctor` shows the subfolder, the dispatcher and the projects sharing it;
-`npx aquila-next-ai check` fails when the hooks or the workflow sit where git or GitHub never run them
-(e.g. a 0.1.0 install in a subfolder — run `init` again to fix it).
+- **Hooks:** a repository has one `core.hooksPath`, so every aquila package writes the same dispatcher
+  (`# aquila-hooks v2`; a package never downgrades a newer one). On `pre-commit` it runs `<package> gate
+  pre-commit` only in projects with staged files; on `pre-push`, only in projects touched by the pushed commits —
+  with the package found in the project's `node_modules` or hoisted to the root (npm/pnpm workspaces).
+- **Executable bit:** `init` records the hooks as `100755` in the index (Windows does not); `check` fails when
+  they are versioned `100644`, which Linux/macOS clones would never run.
+- **CI:** GitHub reads `.github/workflows` only at the root: each project gets `aquila-gates-<folder>.yml`
+  there. Tests that need a database? Declare `ci.services` (e.g. `postgres:16`) and `ci.env`. Already have a
+  pipeline? `ci.workflow: false` — `doctor` prints the two steps to add to it.
+- **Done ≠ CI:** `done.gates` lists what the agent must leave green, independent of `hooks.ci`.
+- **Husky or another manager?** `init` keeps it and tells you to call
+  `"$(git rev-parse --show-toplevel)/.aquila-hooks/pre-commit"` (and `pre-push "$@"`) from it, or migrates with
+  `init --hooks=dispatcher`. A `core.hooksPath` whose folder is gone or has no hooks is migrated with a warning.
+- **Claude Code:** each project enables its own plugin in its `.claude/settings.json`: open the session in the
+  project folder.
+- **Verify:** `npx aquila-next-ai doctor` (subfolder, dispatcher, registered projects, bin found, workflow) and
+  `npx aquila-next-ai check` (fails when hooks or the workflow sit where git/GitHub never read them).
+
+Upgrading: upgrade **all** aquila packages of the repository to the same minor, then run `init` in each
+project and commit `.aquila-hooks/` and the workflows.
+<!-- aquila-monorepo:end -->
+
+<!-- aquila-legacy:start -->
+## Adopting in a legacy project
+
+`init` reads what the project already has before proposing anything:
+
+- **Gates:** a check-only script (`lint:check`, `lint:ci`, `format:check`…) is preferred; a script that fixes
+  files (`--fix`, `--write`) never becomes a gate — in a hook it would change files mid-commit.
+- **Coverage:** the thresholds already in `jest.config` / `vite.config` / `vitest.config` are used, not aquila's
+  default. With a `coverage` gate, CI does not also run `test` (the suite would run twice).
+- **Language:** the identifiers' language is detected (`language.code`; `--code-lang=…` to choose), and
+  `--lang=pt-BR|pt-PT` writes the `docs/` indexes in that language.
+- **Lint plugins:** at `--lint=high`, `init` prints the exact `npm i -D …` with versions that work together
+  (or installs them with `--install`); `doctor` checks the installed versions. They are optional
+  `peerDependencies` of aquila-next-ai.
+
+Then, so existing violations don't block every commit:
+
+```sh
+npx aquila-next-ai lint --baseline   # records today's violations in docs/ai/lint-baseline.json — commit it
+```
+
+From then on `lint-aquila` fails only on **new** violations (ESLint bulk suppressions, ESLint ≥ 9.24); run
+`--baseline` again after fixing to shrink the file. Rules that clash with the project are tuned per rule
+instead of lowering the whole level:
+
+```json
+"lint": { "level": "high", "overrides": { "curly": "off", "max-lines-per-function": ["error", { "max": 120 }] } }
+```
+
+A standing instruction like "commit after every change" goes in `workflow.autoCommit: true`, so the generated
+`AGENTS.md` doesn't contradict it.
+<!-- aquila-legacy:end -->
 
 ## Updating
 

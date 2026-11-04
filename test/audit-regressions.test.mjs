@@ -156,7 +156,6 @@ test('DA-005: non-executing hooks are not proven by command text', () => {
       assert.deepEqual(hookIssues(root, cfg, '.husky/_'), [], script);
     }
     prepare(root);
-    assert.deepEqual(hookIssues(root, cfg, '.aquila/githooks'), [], 'the copied hooks pass');
     execFileSync('git', ['config', 'core.hooksPath', '.husky/_'], { cwd: root });
     writeFileSync(join(root, '.husky/pre-push'), 'echo "npx aquila-next-ai gate pre-push"\n');
     const result = aquila(root, 'check', '--ready');

@@ -4,30 +4,63 @@
     "file": "package.json",
     "contains": "\"next\":"
   },
-  "srcDirs": ["src", "app", "pages", "components", "lib"],
-  "testDirs": ["test", "tests", "e2e", "__tests__"],
+  "srcDirs": [
+    "src",
+    "app",
+    "pages",
+    "components",
+    "lib"
+  ],
+  "testDirs": [
+    "test",
+    "tests",
+    "e2e",
+    "__tests__"
+  ],
   "lintEngine": "eslint",
   "gates": {
     "typecheck": {
-      "npmScripts": ["typecheck", "type-check"]
+      "npmScripts": [
+        "typecheck",
+        "type-check"
+      ]
     },
     "test": {
-      "npmScripts": ["test"]
+      "npmScripts": [
+        "test:ci",
+        "test"
+      ]
     },
     "lint": {
-      "npmScripts": ["lint:ci", "lint"]
+      "npmScripts": [
+        "lint:check",
+        "lint:ci",
+        "lint"
+      ]
     },
     "format": {
-      "npmScripts": ["format:check", "prettier:check"]
+      "npmScripts": [
+        "format:check",
+        "prettier:check",
+        "format"
+      ]
     },
     "coverage": {
-      "npmScripts": ["test:cov", "coverage"]
+      "npmScripts": [
+        "test:cov",
+        "coverage"
+      ]
     },
     "build": {
-      "npmScripts": ["build"]
+      "npmScripts": [
+        "build"
+      ]
     },
     "e2e": {
-      "npmScripts": ["test:e2e", "e2e"],
+      "npmScripts": [
+        "test:e2e",
+        "e2e"
+      ],
       "when": [
         "src/**",
         "app/**",
@@ -50,9 +83,23 @@
     }
   },
   "hooks": {
-    "pre-commit": ["format", "lint"],
-    "pre-push": ["typecheck", "test"],
-    "ci": ["typecheck", "lint", "format", "test", "coverage", "build", "e2e"]
+    "pre-commit": [
+      "format",
+      "lint"
+    ],
+    "pre-push": [
+      "typecheck",
+      "test"
+    ],
+    "ci": [
+      "typecheck",
+      "lint",
+      "format",
+      "test",
+      "coverage",
+      "build",
+      "e2e"
+    ]
   },
   "coverage": {
     "statements": 90,
@@ -64,14 +111,55 @@
     "node-version": "22"
   },
   "coverageEnforcedIf": [
-    ["jest.config.js", "coverageThreshold"],
-    ["jest.config.ts", "coverageThreshold"],
-    ["jest.config.cjs", "coverageThreshold"],
-    ["jest.config.mjs", "coverageThreshold"],
-    ["package.json", "coverageThreshold"],
-    ["vitest.config.ts", "thresholds"],
-    ["vitest.config.mts", "thresholds"],
-    ["vitest.config.js", "thresholds"],
-    ["vite.config.ts", "thresholds"]
+    [
+      "jest.config.js",
+      "coverageThreshold"
+    ],
+    [
+      "jest.config.ts",
+      "coverageThreshold"
+    ],
+    [
+      "jest.config.cjs",
+      "coverageThreshold"
+    ],
+    [
+      "jest.config.mjs",
+      "coverageThreshold"
+    ],
+    [
+      "package.json",
+      "coverageThreshold"
+    ],
+    [
+      "vitest.config.ts",
+      "thresholds"
+    ],
+    [
+      "vitest.config.mts",
+      "thresholds"
+    ],
+    [
+      "vitest.config.js",
+      "thresholds"
+    ],
+    [
+      "vite.config.ts",
+      "thresholds"
+    ]
+  ],
+  "configPaths": [
+    "**/config/**",
+    "**/env.*",
+    "next.config.*",
+    "**/instrumentation*.*"
+  ],
+  "rewrite": [
+    {
+      "match": "(^|s)next lint(s|$)",
+      "fromMajor": 16,
+      "cmd": "npx eslint .",
+      "why": "`next lint` was removed in Next.js 16; ESLint runs directly"
+    }
   ]
 }

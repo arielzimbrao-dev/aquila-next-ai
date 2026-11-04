@@ -35,8 +35,8 @@ test('init detects the stack, creates docs/ai, adapters, exclude and hooks', () 
     assert.equal(cfg.gates.format, undefined, 'no format script, no invented command');
     assert.deepEqual(
       cfg.hooks.ci,
-      ['typecheck', 'lint', 'test', 'coverage'],
-      'only defined gates; coverage does not prove equivalence with test; no ESLint installed, no lint-aquila',
+      ['typecheck', 'lint', 'coverage'],
+      'only defined gates; test:cov is the test command with --coverage, so CI runs the suite once; no ESLint installed, no lint-aquila',
     );
     assert.match(cfg.lint.pending, /ESLint is not installed/);
     assert.deepEqual(cfg.language, { code: 'en', docs: 'en', answers: 'en' }, 'default en');
@@ -100,7 +100,7 @@ test('init detects the stack, creates docs/ai, adapters, exclude and hooks', () 
     assert.doesNotMatch(exclude, /\.agents/);
     assert.equal(
       execFileSync('git', ['config', 'core.hooksPath'], { cwd: root, encoding: 'utf8' }).trim(),
-      '.aquila/githooks',
+      '.aquila-hooks',
     );
     assert.equal(
       execFileSync('git', ['status', '--porcelain', '--', 'AGENTS.md', '.agents'], {
@@ -375,7 +375,7 @@ test('team mode versions the routers and enables the plugin in .claude/settings.
     aquila(root, 'init', '--mode=team');
     const exclude = readIn(root, '.git/info/exclude');
     assert.doesNotMatch(exclude, /^\/AGENTS\.md$/m);
-    assert.match(exclude, /^\/\.claude\/commands\/aquila-plan\.md$/m);
+    assert.doesNotMatch(exclude, /^\/\.claude\/commands\/aquila-plan\.md$/m, 'team versions the commands');
     assert.equal(
       JSON.parse(readIn(root, '.claude/settings.json')).enabledPlugins['aquila@aquila-next-ai'],
       true,
@@ -527,7 +527,6 @@ test('.aquila/: sync copies the method, check flags edits and strays, sync resto
       'core/workflow.md',
       'skills/aquila-plan/SKILL.md',
       'schema/aquila.schema.json',
-      'githooks/pre-push',
       'lint/rules.json',
       'README.md',
     ])
@@ -553,13 +552,3 @@ test('.aquila/: sync copies the method, check flags edits and strays, sync resto
   }
 });
 
-test('init migrates core.hooksPath from node_modules/aquila-next-ai/githooks to .aquila/githooks', () => {
-  const root = project();
-  try {
-    git(root, 'config', 'core.hooksPath', 'node_modules/aquila-next-ai/githooks');
-    assert.equal(aquila(root, 'init').code, 0);
-    assert.equal(git(root, 'config', '--get', 'core.hooksPath'), '.aquila/githooks');
-  } finally {
-    cleanup(root);
-  }
-});

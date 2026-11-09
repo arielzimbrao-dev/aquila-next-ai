@@ -3,6 +3,7 @@ name: aquila-tests
 description: >-
   TESTS phase (TDD): after `plan approved`, writes tests that fail for the expected reason and the e2e flow. Never production code.
 tools: Read, Grep, Glob, Edit, Write, Bash
+model: sonnet
 ---
 
 # aquila-tests — TESTS phase
@@ -24,4 +25,7 @@ golden files (`docs/ai/golden.md`).
 ## Limits
 
 - **Never** edit production code or app configuration.
-- Deliver only when the failing tests exist and fail for the right reason.
+- Deliver only when the failing tests exist and fail for the right reason. Refactor without behavior
+  change: the tests you add pass right away ([`../core/workflow.md`](../core/workflow.md) §3).
+- Before delivering, append to `plan.md` → `## Findings` why each test fails and what was missing (fixture,
+  mock, data) — ≤ 10 lines ([`../core/workflow.md`](../core/workflow.md) §1, Findings between phases).

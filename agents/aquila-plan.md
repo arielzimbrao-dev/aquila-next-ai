@@ -30,6 +30,8 @@ Apply them; do not repeat them.
   - _Test strategy_ is the `aquila-tests` contract: the cases from `core/workflow.md` §2 that apply,
     with the exact state/effects to assert.
   - Name the docs to update in the same task (C4, catalog, track) and the golden file to follow.
+  - A screen to build or restyle → name the design reference (design system, Figma, existing screen); none →
+    ask the dev. A "made by AI" pattern ([`../core/nextjs/ui-design.md`](../core/nextjs/ui-design.md)) only if someone asked: say who.
   - _Files/modules_ above `review.prMaxFiles` (default 30) → split into increments, one PR each
     ([`../core/workflow.md`](../core/workflow.md) §5).
   - Self-contained: the executor reads only `AGENTS.md` + `docs/ai/CONTEXT.md` + `plan.md`.

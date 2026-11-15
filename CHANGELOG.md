@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.6.0 — 2026-11-15
+
+Nothing to change in projects: `npm i -D aquila-next-ai@0.6.0` and `npx aquila-next-ai sync` bring the new `.aquila/`.
+
+- **Readable code** (`core/style.md` → Readable code): names from the domain (verbs for functions, nouns for
+  classes, booleans as questions, no `data`/`handleStuff`/`utils`), one job per function (~20 lines, ≤ 3
+  parameters, no boolean flag parameters), flat flow (guard clauses, no nested ternaries, no magic values),
+  small cohesive files, types that document intent, the project's patterns over taste, tests named after the
+  behavior, and rereading the diff as the next dev. The generated `AGENTS.md` points to it;
+  `aquila-implement` follows it and `aquila-review` flags generic names, multi-purpose functions, deep
+  nesting and magic values. The lint `high` level still caps the worst cases.
+- **UI without the "made by AI" look** (`core/nextjs/ui-design.md`, summarized in `core/nextjs.md`): purple/blue
+  gradients, neon on black, glass cards, emoji and ✨ icons, eyebrow labels, icon-in-a-circle on every card,
+  decorative chips and "live" tags, green arrow pills without a period, KPI rows with sparklines, donuts with
+  a total, rainbow charts, decorative menus, filters that don't filter, "AI insight" boxes, fake data and
+  the component library's stock theme are **off unless explicitly asked for** (the plan says who asked).
+  Screens follow the project's design system; with no reference the agent asks the dev before inventing a
+  look. `aquila-plan` names the design reference, `aquila-implement` follows it and `aquila-review` reports
+  each unrequested pattern as a finding.
+- `AGENTS.md`: the short and medium paths share one line, keeping it within its 3,500-character budget.
+
 ## 0.5.0 — 2026-11-09
 
 Method improvements adapted from edp-ai (the multi-stack sibling of this method). Nothing to change in

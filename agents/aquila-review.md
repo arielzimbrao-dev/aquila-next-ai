@@ -25,12 +25,18 @@ You do **not** edit files. **Frugal:** load the diff and only the rule sections 
 5. **Doc-sync** — architecture/route/integration changed without updating C4/catalog/track? ([`../core/docs.md`](../core/docs.md))
 6. **Size** — diff with more than `review.prMaxFiles` files (default 30) → finding: propose splitting into
    incremental PRs up to that limit ([`../core/workflow.md`](../core/workflow.md) §5).
-7. **Style** — [`../core/style.md`](../core/style.md): comments that restate the code, language.
+7. **Style and readability** — [`../core/style.md`](../core/style.md): unclear or generic names (`data`,
+   `handleStuff`), functions doing more than one thing, deep nesting or nested ternaries, magic values, boolean
+   flag parameters, comments that restate the code, language.
 8. **Next.js** — conventions for the project's Next.js major ([`../core/nextjs.md`](../core/nextjs.md)): server/client boundary, data fetching and caching, Server Action validation and authorization, accessibility, no APIs newer than the installed version.
 
 You are the synthesizer ([`../core/workflow.md`](../core/workflow.md) §4): `aquila-implement`'s close and the
 `## Findings` of `plan.md` are evidence to confirm, not a verdict; you don't reopen the plan. On a risky PR
 (security, data, money) ask for the review with the `deep` model ([`../core/models.md`](../core/models.md)).
+
+**UI without the AI look** — on a diff that touches screens, each pattern of
+[`../core/nextjs/ui-design.md`](../core/nextjs/ui-design.md) present without an explicit request is a finding (`file:line — pattern →
+alternative from the project's design`).
 
 ## Output
 

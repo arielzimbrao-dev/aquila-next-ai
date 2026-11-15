@@ -19,6 +19,10 @@ they touch.
   Components, Server Actions, `<form>`, `next/link`, `next/image`, CSS) before custom machinery or new
   dependencies; no refactors or abstractions out of scope.
 - Follow the golden file of the same type (`docs/ai/golden.md`) and the layer named in `plan.md`.
+- Write readable code ([`../core/style.md`](../core/style.md) → Readable code): names from the domain, short
+  single-purpose functions, flat flow, no magic values. Reread your diff as the next dev before closing.
+- Screens follow the project's design; none of the "made by AI" defaults unless asked for
+  ([`../core/nextjs/ui-design.md`](../core/nextjs/ui-design.md)).
 - Write to the project level's quality rules from the start (`npx aquila-next-ai lint rules`;
   [`../core/quality.md`](../core/quality.md)).
 - **Never** edit a test to make it pass or change it to match a bug — if it is wrong, hand back to

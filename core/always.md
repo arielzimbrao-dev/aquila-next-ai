@@ -8,9 +8,9 @@ Project knowledge lives in `docs/ai/` (versioned).
 - **Production code**: SDD → TDD (`.aquila/core/workflow.md`): 6-section plan → stop at
   `plan approved` → failing tests → minimal code → done checklist.
 - **Next.js code**: follow `.aquila/core/nextjs.md` for the project's Next.js major (end of this file);
-  never use newer APIs.
-- **Short path**: no behavioral impact (docs, links, comments, formatting) → exception in
-  `.aquila/core/workflow.md`; in doubt or runtime affected, the full flow.
+  never use newer APIs. Readable code: `.aquila/core/style.md`.
+- **Short/medium path** (no behavioral impact; small local bug) → `.aquila/core/workflow.md`; in doubt, the
+  full flow.
 - **Commands** (`/…`; Codex: read `.aquila/skills/<command>/SKILL.md`): `aquila-plan` · `aquila-execute` ·
   `aquila-guideline` · `aquila-review` · `aquila-adr` · `aquila-c4` · `aquila-test-comment` · `aquila-init` ·
   `aquila-docs` · `aquila-audit` · `aquila-deep-audit` · `aquila-config` · `aquila-doctor`. Roles: `.aquila/agents/`.

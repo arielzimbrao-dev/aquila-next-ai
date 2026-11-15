@@ -48,6 +48,12 @@ Open a reference file only for the area the task touches.
 - Semantic HTML first; every interactive element reachable by keyboard with an accessible name.
 - Metadata via `metadata`/`generateMetadata`, never hand-written `<head>` in the App Router.
 
+**Visual design** — [`nextjs/ui-design.md`](nextjs/ui-design.md) (read it before building or restyling a page)
+- Build from the project's design system/theme; no reference → ask the dev before inventing a look.
+- The "made by AI" defaults are off unless explicitly asked for: purple/blue gradients, glow on black,
+  glass cards, emoji and ✨ icons, eyebrow labels, icon-in-a-circle on every card, decorative chips/pills,
+  KPI rows with sparklines, donuts with a total, rainbow charts, fake data, filters that don't filter.
+
 **Config, security, ops** — [`nextjs/security-config.md`](nextjs/security-config.md)
 - Env validated once (`src/env.ts`); `NEXT_PUBLIC_*` is public and inlined at **build** time;
   `process.env` only in config ([`quality.md`](quality.md) `configPaths`).
@@ -71,3 +77,4 @@ Open a reference file only for the area the task touches.
 - Auth enforced only in middleware/proxy; `redirect()` inside a swallowing `try/catch`.
 - `<img>`/`<a>` instead of `next/image`/`next/link` for internal assets/routes; missing `sizes` with `fill`.
 - Clickable `div`, missing labels/alt; new dependency for what the platform or React already does.
+- A "made by AI" pattern from [`nextjs/ui-design.md`](nextjs/ui-design.md) that nobody asked for.
